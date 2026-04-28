@@ -85,7 +85,7 @@
 		.field label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
 		.field input, .field textarea {
 			width: 100%; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 10px;
-			font: inherit; font-size: 14px; color: var(--ink); background: #fff;
+			font: inherit; font-size: 16px; color: var(--ink); background: #fff;
 		}
 		.field input:focus, .field textarea:focus { outline: 0; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(234,88,12,.15); }
 		.field textarea { resize: vertical; min-height: 80px; }

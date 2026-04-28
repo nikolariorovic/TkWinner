@@ -54,7 +54,7 @@
 			border: 1.5px solid var(--line);
 			border-radius: 12px;
 			font: inherit;
-			font-size: 15px;
+			font-size: 16px;
 			color: var(--ink);
 			background: #fff;
 			transition: border-color .15s, box-shadow .15s;
