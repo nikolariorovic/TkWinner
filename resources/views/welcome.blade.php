@@ -618,7 +618,7 @@
 			@endphp
 			<div class="gallery-grid" id="galleryGrid">
 				@foreach($galleryImages as $i => $img)
-					<div class="gallery-item {{ $i === 0 ? 'large' : '' }} {{ $i >= 5 ? 'gallery-hidden' : '' }}" data-lb="{{ $i }}">
+					<div class="gallery-item {{ $i === 0 ? 'large' : '' }} {{ $i >= 9 ? 'gallery-hidden' : '' }}" data-lb="{{ $i }}">
 						<img src="/images/{{ $img }}" alt="Galerija TK Winner" loading="lazy" decoding="async">
 					</div>
 				@endforeach
@@ -911,11 +911,16 @@
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/sr.js"></script>
 	<script>
+		// ===== BODY SCROLL LOCK STATE (declared early — referenced by onScroll) =====
+		let bodyLockCount = 0;
+		let bodyLockScrollY = 0;
+
 		// ===== NAV SCROLL =====
 		const nav = document.getElementById('nav');
 		const navToggle = document.getElementById('navToggle');
 		const navLinks = document.getElementById('navLinks');
 		const onScroll = () => {
+			if (bodyLockCount > 0) return;
 			const menuOpen = navLinks.classList.contains('open');
 			nav.classList.toggle('scrolled', window.scrollY > 20 || menuOpen);
 		};
@@ -952,8 +957,6 @@
 		});
 
 		// ===== BODY SCROLL LOCK (mobile-safe) =====
-		let bodyLockCount = 0;
-		let bodyLockScrollY = 0;
 		function lockBodyScroll() {
 			if (bodyLockCount === 0) {
 				bodyLockScrollY = window.scrollY || window.pageYOffset || 0;
@@ -965,9 +968,10 @@
 		function unlockBodyScroll() {
 			bodyLockCount = Math.max(0, bodyLockCount - 1);
 			if (bodyLockCount === 0) {
+				const y = bodyLockScrollY;
 				document.body.classList.remove('modal-open');
 				document.body.style.top = '';
-				window.scrollTo(0, bodyLockScrollY);
+				window.scrollTo({ top: y, left: 0, behavior: 'instant' });
 			}
 		}
 
