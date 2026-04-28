@@ -1,0 +1,22 @@
+{
+  "name": "Teniski klub Winner",
+  "short_name": "TK Winner",
+  "description": "Teniski klub Winner u Smederevskoj Palanci — tri terena od šljake, balon za zimsku sezonu, škola tenisa, online rezervacija.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#006439",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

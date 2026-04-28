@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Privatne / korisničke rute (ne treba ih indeksirati)
+Disallow: /admin
+Disallow: /admin/
+Disallow: /otkazi/
+Disallow: /availability
+Disallow: /day-availability
+Disallow: /month-availability
+Disallow: /available-durations
+
+Sitemap: https://tkwinner.net/sitemap.xml

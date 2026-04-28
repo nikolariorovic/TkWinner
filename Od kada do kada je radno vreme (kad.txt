@@ -1,0 +1,29 @@
+RESENO :
+-Od kada do kada je radno vreme (kada moze da se rezervise poslednji i prvi termin)?
+ 8 - 23 (prvi termin moze u 8 i poslednji u 23 - moze dva sata da rezervise i u 23 pa da ostane do 1 nocu).
+
+Ubaciti ukoliko ne postoji termnin tog dana (slobodan) da mu izadje poruka da pozove broj telefona za
+Ja listu cekanja u slucaju kasnije odustajanja igraca od termina.
+
+Ubaciti na potvrfdu rezervcije i Jasminin broj telefona (tabela na dnu) i mail (ovo na mail-u)
+
+0642397433 - Jasmina
+jasminastevanovic73@gmail.com
+
+-Zapisi prave kontakt informacije.
+Nadezde Petrovic 27 - adresa
+0642671518 - Goran
+
+Odraditi seo
+Komanda da stigne mail sat vremena pre termina
+
+-Koliko dugo treba da se cuva istorija rezervacija (3 meseca ; ili zauvek ; da li je potrebno)?
+Dovoljno je da postoji mesec dana istorije.T
+
+NIJE RESENO :
+
+-Namestiti smpt na vlasnikov mail pre produkcije.
+
+
+
+
