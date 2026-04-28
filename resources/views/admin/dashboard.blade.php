@@ -141,7 +141,7 @@
 		.msg-modal-close:hover { background: var(--surface); color: var(--ink); }
 		.msg-modal-recipient { color: var(--muted); font-size: 14px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
 		.msg-modal-recipient strong { color: var(--ink); font-weight: 700; }
-		#msgText { width: 100%; min-height: 140px; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; font: inherit; font-size: 14px; resize: vertical; box-sizing: border-box; color: var(--ink); }
+		#msgText { width: 100%; min-height: 140px; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; font: inherit; font-size: 16px; resize: vertical; box-sizing: border-box; color: var(--ink); }
 		#msgText:focus { outline: 0; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(234,88,12,.15); }
 		.msg-modal-error { color: var(--danger); font-size: 13px; margin-top: 8px; min-height: 18px; font-weight: 500; }
 		.msg-modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
