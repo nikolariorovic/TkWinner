@@ -132,7 +132,7 @@
 			-webkit-font-smoothing: antialiased;
 			overflow-x: clip;
 		}
-		body.modal-open { position: fixed; left: 0; right: 0; width: 100%; overflow: hidden; }
+		body.modal-open { overflow: hidden; }
 		a { color: inherit; text-decoration: none; }
 		img { display: block; max-width: 100%; height: auto; }
 		button { font: inherit; cursor: pointer; border: 0; background: transparent; }
@@ -337,6 +337,7 @@
 		.modal-close:hover { background: #fee2e2; color: var(--danger); }
 		.modal-body { padding: 28px; }
 		@media (max-width: 640px) {
+			body.modal-open { position: fixed; left: 0; right: 0; width: 100%; }
 			.modal-backdrop { padding: 0; align-items: stretch; height: 100vh; height: 100dvh; }
 			.modal-card { max-height: 100vh; max-height: 100dvh; height: 100vh; height: 100dvh; max-width: 100%; border-radius: 0; }
 			.modal-body { padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
@@ -1089,7 +1090,7 @@
 				locale: flatpickr.l10ns.sr || 'sr',
 				dateFormat: 'Y-m-d',
 				minDate: 'today',
-				static: true,
+				static: window.matchMedia('(max-width: 640px)').matches,
 				disable: [(date) => disabledSet.has(ymd(date))],
 				onOpen: async (_, __, inst) => { await fetchMonthAvailability(inst.currentYear, inst.currentMonth + 1); },
 				onMonthChange: async (_, __, inst) => { await fetchMonthAvailability(inst.currentYear, inst.currentMonth + 1); },
