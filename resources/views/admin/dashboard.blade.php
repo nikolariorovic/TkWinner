@@ -179,10 +179,10 @@
 			.current-date { font-size: 14px; padding: 0 4px; }
 			.current-date small { font-size: 10px; }
 			.today-pill { margin-left: 6px; font-size: 10px; padding: 1px 6px; }
-			.date-form { flex-direction: column; align-items: stretch; }
-			.date-form input[type="date"] { width: 100%; }
-			.btn-today { width: 100%; text-align: center; }
-			#todayBtnWrap { display: block; }
+			.date-form { flex-direction: column; align-items: stretch; min-width: 0; width: 100%; }
+			.date-form input[type="date"] { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+			.btn-today { width: 100%; text-align: center; box-sizing: border-box; }
+			#todayBtnWrap { display: block; min-width: 0; }
 		}
 	</style>
 </head>
