@@ -8,9 +8,6 @@ use App\Http\Controllers\ReservationController;
 Route::get('/.well-known/appspecific/com.chrome.devtools.json', function () {
 	return response()->noContent(204)->header('Cache-Control', 'public, max-age=86400');
 });
-Route::get('/favicon.ico', function () {
-	return response()->noContent(204)->header('Cache-Control', 'public, max-age=2592000'); // 30 days
-});
 
 Route::get('/', [ReservationController::class, 'index'])->name('reservations.index');
 Route::get('/sitemap.xml', function () {

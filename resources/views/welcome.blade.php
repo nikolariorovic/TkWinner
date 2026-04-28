@@ -41,7 +41,8 @@
 	<meta name="theme-color" content="#006439">
 
 	{{-- Favicons i Web App Manifest --}}
-	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 	<link rel="icon" type="image/svg+xml" href="/images/logo.svg">
@@ -99,8 +100,23 @@
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+	<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" onload="this.onload=null;this.rel='stylesheet'">
+	<noscript>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	</noscript>
+
+	@if($gaId = config('services.google.analytics_id'))
+		{{-- Google Analytics (gtag.js) --}}
+		<script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', '{{ $gaId }}', { anonymize_ip: true });
+		</script>
+	@endif
 
 	<style>
 		*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -499,7 +515,7 @@
 					</div>
 				</div>
 				<div class="about-img">
-					<img src="/images/oklubu.jpeg" alt="Teniski klub Winner">
+					<img src="/images/oklubu.jpeg" alt="Teniski klub Winner" loading="lazy" decoding="async">
 					<div class="about-float">
 						<div class="about-float-num">4.5</div>
 						<div>
@@ -534,7 +550,7 @@
 				@foreach($courts as $i => $court)
 					<article class="court-card">
 						<div class="court-card-img">
-							<img src="{{ $courtImgs[$i % count($courtImgs)] }}" alt="{{ $court->name }} — Teniski klub Winner Smederevska Palanka">
+							<img src="{{ $courtImgs[$i % count($courtImgs)] }}" alt="{{ $court->name }} — Teniski klub Winner Smederevska Palanka" loading="lazy" decoding="async">
 							<span class="court-card-tag">Dostupno online</span>
 						</div>
 						<div class="court-card-body">
@@ -602,8 +618,8 @@
 			@endphp
 			<div class="gallery-grid" id="galleryGrid">
 				@foreach($galleryImages as $i => $img)
-					<div class="gallery-item {{ $i === 0 ? 'large' : '' }} {{ $i >= 9 ? 'gallery-hidden' : '' }}" data-lb="{{ $i }}">
-						<img src="/images/{{ $img }}" alt="Galerija TK Winner" loading="lazy">
+					<div class="gallery-item {{ $i === 0 ? 'large' : '' }} {{ $i >= 5 ? 'gallery-hidden' : '' }}" data-lb="{{ $i }}">
+						<img src="/images/{{ $img }}" alt="Galerija TK Winner" loading="lazy" decoding="async">
 					</div>
 				@endforeach
 			</div>
@@ -637,7 +653,7 @@
 						<div class="t-quote">“</div>
 						<p class="t-text">{{ $t['text'] }}</p>
 						<div class="t-author">
-							<img class="t-avatar" src="https://picsum.photos/seed/{{ $t['seed'] }}/100/100" alt="{{ $t['name'] }}">
+							<img class="t-avatar" src="https://picsum.photos/seed/{{ $t['seed'] }}/100/100" alt="{{ $t['name'] }}" loading="lazy" decoding="async">
 							<div>
 								<div class="t-name">{{ $t['name'] }}</div>
 								<div class="t-role">{{ $t['role'] }}</div>
@@ -1326,7 +1342,7 @@
 		const loadMoreBtn = document.getElementById('galleryLoadMore');
 		loadMoreBtn.addEventListener('click', () => {
 			const hidden = document.querySelectorAll('#galleryGrid .gallery-item.gallery-hidden');
-			Array.from(hidden).slice(0, 3).forEach(el => el.classList.remove('gallery-hidden'));
+			Array.from(hidden).slice(0, 6).forEach(el => el.classList.remove('gallery-hidden'));
 			if (document.querySelectorAll('#galleryGrid .gallery-item.gallery-hidden').length === 0) {
 				loadMoreBtn.style.display = 'none';
 			}
