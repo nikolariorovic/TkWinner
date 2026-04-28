@@ -132,7 +132,7 @@
 			-webkit-font-smoothing: antialiased;
 			overflow-x: clip;
 		}
-		body.modal-open { overflow: hidden; }
+		body.modal-open { position: fixed; left: 0; right: 0; width: 100%; overflow: hidden; }
 		a { color: inherit; text-decoration: none; }
 		img { display: block; max-width: 100%; height: auto; }
 		button { font: inherit; cursor: pointer; border: 0; background: transparent; }
@@ -267,7 +267,7 @@
 			.gallery-item.large { grid-column: span 2; grid-row: span 1; }
 		}
 		/* Lightbox */
-		.lb-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 2000; align-items: center; justify-content: center; }
+		.lb-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 2000; align-items: center; justify-content: center; overscroll-behavior: contain; touch-action: none; }
 		.lb-backdrop.open { display: flex; }
 		.lb-img { max-width: 90vw; max-height: 82vh; object-fit: contain; border-radius: 10px; box-shadow: 0 8px 40px rgba(0,0,0,.6); user-select: none; display: block; }
 		.lb-close { position: fixed; top: 18px; right: 22px; background: rgba(255,255,255,.15); border: none; color: #fff; font-size: 28px; width: 46px; height: 46px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; z-index: 2001; }
@@ -335,7 +335,7 @@
 		.modal-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
 		.modal-close { width: 38px; height: 38px; border-radius: 10px; background: var(--surface); color: var(--ink-2); display: flex; align-items: center; justify-content: center; transition: background .2s, color .2s; }
 		.modal-close:hover { background: #fee2e2; color: var(--danger); }
-		.modal-body { padding: 28px; overflow-y: auto; flex: 1; }
+		.modal-body { padding: 28px; overflow-y: auto; flex: 1; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 		@media (max-width: 640px) {
 			.modal-backdrop { padding: 0; align-items: stretch; }
 			.modal-card { max-height: 100vh; height: 100vh; max-width: 100%; border-radius: 0; }
@@ -351,7 +351,7 @@
 		.step-title { font-weight: 800; font-size: 18px; letter-spacing: -.01em; margin-bottom: 18px; color: var(--ink); }
 		.row { margin-bottom: 16px; }
 		.label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--ink-2); font-size: 13px; }
-		.select, .input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; font-size: 15px; color: var(--ink); transition: border-color .2s, box-shadow .2s; font-family: inherit; }
+		.select, .input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; font-size: 16px; color: var(--ink); transition: border-color .2s, box-shadow .2s; font-family: inherit; }
 		.select:focus, .input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px rgba(234,88,12,.1); }
 		.select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 44px; }
 		.button-row { display: flex; gap: 12px; justify-content: space-between; align-items: center; margin-top: 20px; flex-wrap: wrap; }
@@ -368,8 +368,11 @@
 		.waitlist-bubble::before { content: '📞'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 20px; }
 		.waitlist-bubble a { color: #9a3412; font-weight: 700; text-decoration: none; white-space: nowrap; }
 		.waitlist-bubble a:hover { text-decoration: underline; }
-		.time-badge { padding: 12px 10px; border-radius: 12px; background: #fff; border: 1.5px solid var(--line); text-align: center; font-weight: 600; font-size: 14px; color: var(--ink-2); cursor: pointer; transition: all .2s; user-select: none; }
-		.time-badge:hover { border-color: var(--brand); color: var(--brand); transform: translateY(-2px); }
+		.time-badge { padding: 12px 10px; border-radius: 12px; background: #fff; border: 1.5px solid var(--line); text-align: center; font-weight: 600; font-size: 14px; color: var(--ink-2); cursor: pointer; transition: border-color .15s, color .15s, background .15s, box-shadow .15s, transform .15s; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+		@media (hover: hover) and (pointer: fine) {
+			.time-badge:hover { border-color: var(--brand); color: var(--brand); transform: translateY(-2px); }
+		}
+		.time-badge:active:not(.active) { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
 		.time-badge.active { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff; border-color: transparent; box-shadow: 0 8px 18px rgba(234,88,12,.3); }
 		.alert { padding: 14px 16px; border-radius: 12px; margin-bottom: 16px; font-size: 13px; font-weight: 500; }
 		.alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
@@ -382,7 +385,10 @@
 		.times-loading { display: flex; justify-content: center; padding: 28px 0; }
 
 		/* Flatpickr overrides */
+		.flatpickr-wrapper { display: block !important; width: 100%; position: relative; }
 		.flatpickr-calendar { border-radius: 16px !important; box-shadow: var(--shadow-lg) !important; border: 1px solid var(--line) !important; font-family: inherit !important; z-index: 1001 !important; }
+		.flatpickr-calendar.static { width: 100%; max-width: 100%; }
+		.flatpickr-calendar.static.open { left: 0 !important; right: 0 !important; }
 		.flatpickr-day.selected, .flatpickr-day.selected:hover { background: linear-gradient(135deg, var(--brand), var(--brand-2)) !important; border-color: transparent !important; color: #fff !important; }
 		.flatpickr-day:hover { background: var(--brand-soft) !important; border-color: #fed7aa !important; }
 		.flatpickr-day.today { border-color: var(--brand) !important; }
@@ -927,6 +933,26 @@
 			});
 		});
 
+		// ===== BODY SCROLL LOCK (mobile-safe) =====
+		let bodyLockCount = 0;
+		let bodyLockScrollY = 0;
+		function lockBodyScroll() {
+			if (bodyLockCount === 0) {
+				bodyLockScrollY = window.scrollY || window.pageYOffset || 0;
+				document.body.style.top = `-${bodyLockScrollY}px`;
+				document.body.classList.add('modal-open');
+			}
+			bodyLockCount++;
+		}
+		function unlockBodyScroll() {
+			bodyLockCount = Math.max(0, bodyLockCount - 1);
+			if (bodyLockCount === 0) {
+				document.body.classList.remove('modal-open');
+				document.body.style.top = '';
+				window.scrollTo(0, bodyLockScrollY);
+			}
+		}
+
 		// ===== MODAL =====
 		const modal = document.getElementById('modal');
 		const modalClose = document.getElementById('modalClose');
@@ -936,7 +962,7 @@
 				formError.classList.add('hidden');
 			}
 			modal.classList.add('open');
-			document.body.classList.add('modal-open');
+			lockBodyScroll();
 			if (prefillCourtId) {
 				const sel = document.getElementById('court_id');
 				sel.value = String(prefillCourtId);
@@ -944,8 +970,9 @@
 			}
 		}
 		function closeModal() {
+			if (!modal.classList.contains('open')) return;
 			modal.classList.remove('open');
-			document.body.classList.remove('modal-open');
+			unlockBodyScroll();
 		}
 		document.querySelectorAll('[data-open-modal]').forEach(b => {
 			b.addEventListener('click', (e) => {
@@ -1061,6 +1088,7 @@
 				locale: flatpickr.l10ns.sr || 'sr',
 				dateFormat: 'Y-m-d',
 				minDate: 'today',
+				static: true,
 				disable: [(date) => disabledSet.has(ymd(date))],
 				onOpen: async (_, __, inst) => { await fetchMonthAvailability(inst.currentYear, inst.currentMonth + 1); },
 				onMonthChange: async (_, __, inst) => { await fetchMonthAvailability(inst.currentYear, inst.currentMonth + 1); },
@@ -1266,11 +1294,12 @@
 		function lbOpen(i) {
 			lbShow(i);
 			lb.classList.add('open');
-			document.body.classList.add('modal-open');
+			lockBodyScroll();
 		}
 		function lbClose() {
+			if (!lb.classList.contains('open')) return;
 			lb.classList.remove('open');
-			document.body.classList.remove('modal-open');
+			unlockBodyScroll();
 		}
 		document.getElementById('lbClose').addEventListener('click', lbClose);
 		document.getElementById('lbPrev').addEventListener('click', () => lbShow(lbIdx - 1));
