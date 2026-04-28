@@ -132,10 +132,11 @@
 		.pag-btn[disabled] { opacity: .35; cursor: not-allowed; pointer-events: none; }
 		.pag-info { font-size: 14px; font-weight: 600; color: var(--ink-2); min-width: 56px; text-align: center; }
 
-		.msg-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+		.msg-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; height: 100dvh; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
 		.msg-modal.open { display: flex; }
-		.msg-modal-card { background: #fff; border-radius: 16px; max-width: 520px; width: 100%; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); margin: auto; }
-		body.msg-modal-open { overflow: hidden; position: fixed; left: 0; right: 0; width: 100%; }
+		.msg-modal-card { background: #fff; border-radius: 16px; max-width: 520px; width: 100%; max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+		html.msg-modal-open, body.msg-modal-open { overflow: hidden; height: 100%; }
+		body.msg-modal-open { position: fixed; left: 0; right: 0; width: 100%; }
 		.msg-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 		.msg-modal-header h2 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.01em; }
 		.msg-modal-close { background: transparent; border: 0; font-size: 24px; cursor: pointer; color: var(--muted); width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
@@ -525,6 +526,7 @@
 			msgSend.disabled = false;
 			msgLockScrollY = window.scrollY || window.pageYOffset || 0;
 			document.body.style.top = `-${msgLockScrollY}px`;
+			document.documentElement.classList.add('msg-modal-open');
 			document.body.classList.add('msg-modal-open');
 			msgModal.classList.add('open');
 			setTimeout(() => msgText.focus(), 50);
@@ -534,6 +536,7 @@
 			if (!msgModal.classList.contains('open')) return;
 			msgModal.classList.remove('open');
 			document.body.classList.remove('msg-modal-open');
+			document.documentElement.classList.remove('msg-modal-open');
 			document.body.style.top = '';
 			window.scrollTo({ top: msgLockScrollY, left: 0, behavior: 'instant' });
 			msgCurrentUrl = null;
