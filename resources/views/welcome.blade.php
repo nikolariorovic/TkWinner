@@ -328,14 +328,14 @@
 		/* ===== MODAL ===== */
 		.modal-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(12,10,9,.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity .25s; }
 		.modal-backdrop.open { display: flex; opacity: 1; }
-		.modal-card { width: 100%; max-width: 720px; max-height: 92vh; background: #fff; border-radius: 24px; box-shadow: 0 30px 70px rgba(0,0,0,.35); overflow: hidden; display: flex; flex-direction: column; transform: translateY(20px); transition: transform .3s; }
+		.modal-card { width: 100%; max-width: 720px; max-height: 92vh; background: #fff; border-radius: 24px; box-shadow: 0 30px 70px rgba(0,0,0,.35); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; transform: translateY(20px); transition: transform .3s; }
 		.modal-backdrop.open .modal-card { transform: translateY(0); }
-		.modal-header { padding: 22px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+		.modal-header { padding: 22px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff; z-index: 2; }
 		.modal-title { font-weight: 800; font-size: 20px; letter-spacing: -.01em; }
 		.modal-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
 		.modal-close { width: 38px; height: 38px; border-radius: 10px; background: var(--surface); color: var(--ink-2); display: flex; align-items: center; justify-content: center; transition: background .2s, color .2s; }
 		.modal-close:hover { background: #fee2e2; color: var(--danger); }
-		.modal-body { padding: 28px; overflow-y: auto; flex: 1; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+		.modal-body { padding: 28px; }
 		@media (max-width: 640px) {
 			.modal-backdrop { padding: 0; align-items: stretch; height: 100vh; height: 100dvh; }
 			.modal-card { max-height: 100vh; max-height: 100dvh; height: 100vh; height: 100dvh; max-width: 100%; border-radius: 0; }
