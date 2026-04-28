@@ -80,7 +80,9 @@
 		.today-pill { display: inline-block; background: var(--success-soft); color: var(--success); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 8px; margin-left: 8px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
 		.date-form { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 		#todayBtnWrap { display: inline-flex; }
-		.date-form input[type="date"] { padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 10px; font: inherit; font-size: 14px; color: var(--ink); background: #fff; }
+		.date-form input[type="date"] { padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 10px; font: inherit; font-size: 14px; color: var(--ink); background: #fff; -webkit-appearance: none; appearance: none; -webkit-min-logical-width: 0; min-width: 0; }
+		.date-form input[type="date"]::-webkit-date-and-time-value { text-align: center; min-width: 0; }
+		.date-form input[type="date"]::-webkit-calendar-picker-indicator { display: none; -webkit-appearance: none; }
 		.date-form input[type="date"]:focus { outline: 0; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(234,88,12,.15); }
 		.btn-today { padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--line); background: #fff; font-size: 14px; font-weight: 600; color: var(--ink-2); transition: background .15s, border-color .15s, color .15s; }
 		.btn-today:hover { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
@@ -157,7 +159,7 @@
 			.toolbar { flex-direction: column; align-items: stretch; }
 			.date-nav { justify-content: space-between; }
 			.date-form { justify-content: center; }
-			.date-form input[type="date"] { flex: 1 1 auto; min-width: 160px; }
+			.date-form input[type="date"] { flex: 1 1 auto; min-width: 0; }
 			table { border-spacing: 0; margin-top: 0; }
 			table thead { display: none; }
 			table, tbody, tr, td { display: block; width: 100%; }
