@@ -337,8 +337,9 @@
 		.modal-close:hover { background: #fee2e2; color: var(--danger); }
 		.modal-body { padding: 28px; overflow-y: auto; flex: 1; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 		@media (max-width: 640px) {
-			.modal-backdrop { padding: 0; align-items: stretch; }
-			.modal-card { max-height: 100vh; height: 100vh; max-width: 100%; border-radius: 0; }
+			.modal-backdrop { padding: 0; align-items: stretch; height: 100vh; height: 100dvh; }
+			.modal-card { max-height: 100vh; max-height: 100dvh; height: 100vh; height: 100dvh; max-width: 100%; border-radius: 0; }
+			.modal-body { padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
 		}
 
 		/* ===== BOOKING FORM (inside modal) ===== */
