@@ -5,8 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 
-	<title>Teniski klub Winner Smederevska Palanka | TK Winner</title>
-	<meta name="description" content="Teniski klub Winner u Smederevskoj Palanci — tri terena od šljake, balon za zimsku sezonu, škola tenisa za decu i odrasle, treninzi i klupski turniri. Online rezervacija termina.">
+	<title>Teniski klub Winner Smederevska Palanka — Rezerviši teren i termin | TK Winner</title>
+	<meta name="description" content="Teniski klub Winner u Smederevskoj Palanci — tri terena od šljake, balon za zimsku sezonu, škola tenisa za decu i odrasle. Rezerviši svoj teren i termin online u par klikova.">
 	<meta name="keywords" content="TK Winner, teniski klub Winner, tenis Smederevska Palanka, teniski klub Smederevska Palanka, škola tenisa Smederevska Palanka, rezervacija terena za tenis, balon tenis Palanka, treninzi tenisa, tereni od šljake">
 	<meta name="author" content="Teniski klub Winner">
 	<meta name="robots" content="index, follow, max-image-preview:large">
@@ -22,8 +22,8 @@
 	{{-- Open Graph (Facebook, LinkedIn, Viber, ...) --}}
 	<meta property="og:type" content="website">
 	<meta property="og:site_name" content="Teniski klub Winner">
-	<meta property="og:title" content="Teniski klub Winner Smederevska Palanka — TK Winner">
-	<meta property="og:description" content="Tri terena, balon za zimu, škola tenisa za sve uzraste. Online rezervacija termina u Smederevskoj Palanci.">
+	<meta property="og:title" content="Teniski klub Winner Smederevska Palanka — Rezerviši teren i termin">
+	<meta property="og:description" content="Tri terena, balon za zimu, škola tenisa za sve uzraste. Rezerviši svoj teren i termin online u Smederevskoj Palanci.">
 	<meta property="og:url" content="{{ url()->current() }}">
 	<meta property="og:locale" content="sr_RS">
 	<meta property="og:image" content="{{ asset('images/og-image.jpg') }}">
@@ -33,19 +33,18 @@
 
 	{{-- Twitter Card --}}
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="Teniski klub Winner Smederevska Palanka — TK Winner">
-	<meta name="twitter:description" content="Tri terena, balon za zimu, škola tenisa, online rezervacija termina.">
+	<meta name="twitter:title" content="Teniski klub Winner Smederevska Palanka — Rezerviši teren i termin">
+	<meta name="twitter:description" content="Tri terena, balon za zimu, škola tenisa. Rezerviši svoj teren i termin online.">
 	<meta name="twitter:image" content="{{ asset('images/og-image.jpg') }}">
 
 	{{-- Theme color (mobilni browseri) --}}
 	<meta name="theme-color" content="#006439">
 
 	{{-- Favicons i Web App Manifest --}}
-	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/favicon.ico" sizes="any">
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/svg+xml" href="/images/logo.svg">
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="manifest" href="/site.webmanifest">
 
@@ -61,7 +60,6 @@
 			'logo' => asset('images/logo.svg'),
 			'image' => asset('images/naslovna.jpeg'),
 			'telephone' => '+381642671518',
-			'email' => 'goran.surjak71@gmail.com',
 			'priceRange' => '$$',
 			'address' => [
 				'@type' => 'PostalAddress',
@@ -533,7 +531,7 @@
 		<div class="container">
 			<div class="section-header">
 				<span class="eyebrow">Naši tereni</span>
-				<h2 class="h2">Odaberi teren po meri</h2>
+				<h2 class="h2">Rezerviši teren i termin po meri</h2>
 				<p class="lead">Tri terena za različite potrebe i godišnja doba. Sva tri su od šljake, podloga koja se kod nas najčešće igra.</p>
 			</div>
 
@@ -707,7 +705,7 @@
 						</div>
 						<div>
 							<div class="contact-label">Email</div>
-							<div class="contact-value"><a href="mailto:goran.surjak71@gmail.com">goran.surjak71@gmail.com</a></div>
+							<div class="contact-value"><a href="#" class="js-email" data-u="goran.surjak71" data-d="gmail.com" rel="nofollow">goran.surjak71&#64;gmail.com</a></div>
 						</div>
 					</div>
 
@@ -756,7 +754,7 @@
 				<div>
 					<h4>Kontakt</h4>
 					<a href="tel:+381642671518">+381 64 267 15 18</a>
-					<a href="mailto:goran.surjak71@gmail.com">goran.surjak71@gmail.com</a>
+					<a href="#" class="js-email" data-u="goran.surjak71" data-d="gmail.com" rel="nofollow">goran.surjak71&#64;gmail.com</a>
 					<a href="#">Nadežde Petrović 27</a>
 					<a href="#">Smederevska Palanka</a>
 				</div>
@@ -1341,6 +1339,11 @@
 		});
 		document.querySelectorAll('.gallery-item[data-lb]').forEach(el => {
 			el.addEventListener('click', () => lbOpen(+el.dataset.lb));
+		});
+		// ===== EMAIL OBFUSCATION (anti-spam) =====
+		document.querySelectorAll('a.js-email').forEach(a => {
+			const addr = a.dataset.u + '@' + a.dataset.d;
+			a.href = 'mailto:' + addr;
 		});
 		// ===== LOAD MORE =====
 		const loadMoreBtn = document.getElementById('galleryLoadMore');

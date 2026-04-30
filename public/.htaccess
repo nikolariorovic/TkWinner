@@ -13,6 +13,10 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
+    # Force non-www (canonical host)
+    RewriteCond %{HTTP_HOST} ^www\.tkwinner\.org$ [NC]
+    RewriteRule ^(.*)$ https://tkwinner.org/$1 [L,R=301]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
@@ -49,6 +53,9 @@
 </IfModule>
 
 <IfModule mod_headers.c>
+    # HSTS — force HTTPS for 1 year, including subdomains
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
     <FilesMatch "\.(jpe?g|png|gif|webp|avif|svg|ico|woff2?|ttf|eot)$">
         Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>
