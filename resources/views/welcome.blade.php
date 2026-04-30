@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 
-	<title>Teniski klub Winner Smederevska Palanka — Rezerviši teren i termin | TK Winner</title>
+	<title>TK Winner Smederevska Palanka — Rezerviši teren</title>
 	<meta name="description" content="Teniski klub Winner u Smederevskoj Palanci — tri terena od šljake, balon za zimsku sezonu, škola tenisa za decu i odrasle. Rezerviši svoj teren i termin online u par klikova.">
 	<meta name="keywords" content="TK Winner, teniski klub Winner, tenis Smederevska Palanka, teniski klub Smederevska Palanka, škola tenisa Smederevska Palanka, rezervacija terena za tenis, balon tenis Palanka, treninzi tenisa, tereni od šljake">
 	<meta name="author" content="Teniski klub Winner">
