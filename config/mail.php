@@ -117,4 +117,6 @@ return [
 
     'owner_address' => env('OWNER_EMAIL'),
 
+    'owner_address_secondary' => env('OWNER_EMAIL_SECONDARY'),
+
 ];

@@ -167,6 +167,11 @@ final class AdminController extends Controller
 			Mail::to($ownerEmail)->send(new OwnerReservationCancelledMail($mailData));
 		}
 
+		$ownerEmailSecondary = config('mail.owner_address_secondary');
+		if (!empty($ownerEmailSecondary)) {
+			Mail::to($ownerEmailSecondary)->send(new OwnerReservationCancelledMail($mailData));
+		}
+
 		return redirect()
 			->route('admin.dashboard', ['date' => $dateStr])
 			->with('success', sprintf(

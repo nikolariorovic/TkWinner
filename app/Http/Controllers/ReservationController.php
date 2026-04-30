@@ -171,6 +171,11 @@ final class ReservationController extends Controller
 			Mail::to($ownerEmail)->send(new ReservationConfirmedMail($reservation, forOwner: true));
 		}
 
+		$ownerEmailSecondary = config('mail.owner_address_secondary');
+		if (!empty($ownerEmailSecondary)) {
+			Mail::to($ownerEmailSecondary)->send(new ReservationConfirmedMail($reservation, forOwner: true));
+		}
+
 
 		if ($request->expectsJson()) {
 			return response()->json(['message' => 'Uspešno ste rezervisali termin.']);
@@ -255,6 +260,11 @@ final class ReservationController extends Controller
 		$ownerEmail = config('mail.owner_address');
 		if (!empty($ownerEmail)) {
 			Mail::to($ownerEmail)->send(new OwnerReservationCancelledMail($mailData));
+		}
+
+		$ownerEmailSecondary = config('mail.owner_address_secondary');
+		if (!empty($ownerEmailSecondary)) {
+			Mail::to($ownerEmailSecondary)->send(new OwnerReservationCancelledMail($mailData));
 		}
 
 		return view('cancel', [
