@@ -10,7 +10,7 @@ use Illuminate\Console\Command;
 
 final class PruneOldReservations extends Command
 {
-	protected $signature = 'Izreservations:prune';
+	protected $signature = 'reservations:prune';
 	protected $description = 'Briše rezervacije starije od 30 dana.';
 
 	public function handle(): int
