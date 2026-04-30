@@ -102,6 +102,8 @@
 
 			@if ($errors->any())
 				<div class="alert">{{ $errors->first() }}</div>
+			@elseif (session('error'))
+				<div class="alert">{{ session('error') }}</div>
 			@endif
 
 			<form method="post" action="{{ route('admin.login') }}">
