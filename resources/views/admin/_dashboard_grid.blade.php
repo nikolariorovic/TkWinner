@@ -62,6 +62,8 @@
 										<div class="cell-empty-inner">—</div>
 									@endif
 								</td>
+							@elseif ($cell['type'] === 'unavailable')
+								<td class="cell-empty cell-unavailable"><div class="cell-empty-inner"></div></td>
 							@else
 								<td class="cell-empty"><div class="cell-empty-inner">{{ $isPast ? '' : 'Slobodno' }}</div></td>
 							@endif

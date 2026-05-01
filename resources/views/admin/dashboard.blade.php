@@ -134,6 +134,7 @@
 			font-size: 11px; color: #b8b3ad; font-weight: 500;
 		}
 		tr.row-past .cell-empty-inner { color: #d4d0cb; }
+		.cell-empty.cell-unavailable { background: #ededed; }
 
 		.cell-reservation {
 			padding: 4px;
@@ -528,6 +529,10 @@
 							+ '<div class="res-name">' + esc(r.firstName) + ' ' + esc(r.lastName) + '</div>'
 							+ '<div class="res-time">' + esc(r.startTime) + ' – ' + esc(r.endTime) + '</div>'
 							+ '</button></td>';
+						return;
+					}
+					if (cell.type === 'unavailable') {
+						html += '<td class="cell-empty cell-unavailable"><div class="cell-empty-inner"></div></td>';
 						return;
 					}
 					html += '<td class="cell-empty"><div class="cell-empty-inner">' + (isPast ? '' : 'Slobodno') + '</div></td>';

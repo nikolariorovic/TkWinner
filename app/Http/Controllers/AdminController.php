@@ -153,6 +153,13 @@ final class AdminController extends Controller
 		$endMin = 23 * 60 + 30; // exclusive end; last row label = 23:00
 		$rows = (int) (($endMin - $openMin) / $step);
 
+		$lastStartMin = 23 * 60;
+		$maxResMin = 120;
+		$logicalEndMin = $lastStartMin + $maxResMin;
+		$logicalSlots = (int) (($logicalEndMin - $openMin) / $step);
+		$lastStartIdx = (int) (($lastStartMin - $openMin) / $step);
+		$durationSteps = [2, 3, 4]; // 60, 90, 120 min
+
 		$hours = [];
 		for ($i = 0; $i < $rows; $i++) {
 			$m = $openMin + $i * $step;
@@ -160,8 +167,10 @@ final class AdminController extends Controller
 		}
 
 		$grid = [];
+		$busyByCourt = [];
 		foreach ($courts as $court) {
 			$grid[$court->id] = array_fill(0, $rows, ['type' => 'empty']);
+			$busyByCourt[$court->id] = array_fill(0, $logicalSlots, false);
 		}
 
 		foreach ($reservations as $r) {
@@ -172,6 +181,15 @@ final class AdminController extends Controller
 			[$hh, $mm] = array_pad(explode(':', $startStr), 2, '0');
 			$startMin = (int) $hh * 60 + (int) $mm;
 			$duration = (int) $r->timeSlot->duration_minutes;
+
+			$endMinR = $startMin + $duration;
+			for ($m = max($startMin, $openMin); $m < min($endMinR, $logicalEndMin); $m += $step) {
+				$bIdx = intdiv($m - $openMin, $step);
+				if ($bIdx >= 0 && $bIdx < $logicalSlots) {
+					$busyByCourt[$r->court_id][$bIdx] = true;
+				}
+			}
+
 			$startIdx = (int) (($startMin - $openMin) / $step);
 			if ($startIdx < 0 || $startIdx >= $rows) {
 				continue;
@@ -185,6 +203,33 @@ final class AdminController extends Controller
 			];
 			for ($k = 1; $k < $span; $k++) {
 				$grid[$r->court_id][$startIdx + $k] = ['type' => 'skip'];
+			}
+		}
+
+		foreach ($courts as $court) {
+			$busy = $busyByCourt[$court->id];
+			for ($i = 0; $i < $rows; $i++) {
+				if ($grid[$court->id][$i]['type'] !== 'empty') {
+					continue;
+				}
+				$reachable = false;
+				foreach ($durationSteps as $steps) {
+					$sMin = max(0, $i - $steps + 1);
+					$sMax = min($lastStartIdx, $i);
+					for ($s = $sMin; $s <= $sMax; $s++) {
+						if ($s + $steps > $logicalSlots) {
+							continue;
+						}
+						$allFree = true;
+						for ($k = 0; $k < $steps; $k++) {
+							if ($busy[$s + $k]) { $allFree = false; break; }
+						}
+						if ($allFree) { $reachable = true; break 2; }
+					}
+				}
+				if (!$reachable) {
+					$grid[$court->id][$i] = ['type' => 'unavailable'];
+				}
 			}
 		}
 
