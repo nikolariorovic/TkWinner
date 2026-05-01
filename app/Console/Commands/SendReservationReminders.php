@@ -32,8 +32,20 @@ final class SendReservationReminders extends Command
 			->with(['court', 'timeSlot'])
 			->get();
 
+		$ownerEmail = config('mail.owner_address');
+		$ownerEmailSecondary = config('mail.owner_address_secondary');
+
 		foreach ($reservations as $reservation) {
 			Mail::to($reservation->email)->send(new ReservationReminderMail($reservation));
+
+			if (!empty($ownerEmail)) {
+				Mail::to($ownerEmail)->send(new ReservationReminderMail($reservation));
+			}
+
+			if (!empty($ownerEmailSecondary)) {
+				Mail::to($ownerEmailSecondary)->send(new ReservationReminderMail($reservation));
+			}
+
 			$reservation->update(['reminder_sent' => true]);
 			$this->info("Podsetnik poslat: {$reservation->email} — {$reservation->reservation_date} {$reservation->start_time}");
 		}
