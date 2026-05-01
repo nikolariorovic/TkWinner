@@ -58,7 +58,6 @@ final class AdminController extends Controller
 	{
 		$validated = $request->validate([
 			'date' => ['nullable', 'date'],
-			'page' => ['nullable', 'integer', 'min:1'],
 		]);
 
 		$tz = 'Europe/Belgrade';
@@ -67,44 +66,64 @@ final class AdminController extends Controller
 			? CarbonImmutable::parse($validated['date'], $tz)->startOfDay()
 			: $now->startOfDay();
 
-		$page = (int) ($validated['page'] ?? 1);
+		$courts = Court::query()
+			->where('is_active', true)
+			->orderBy('id')
+			->get();
 
 		$reservations = Reservation::query()
 			->with(['court', 'timeSlot'])
 			->where('reservation_date', $date->toDateString())
 			->orderBy('start_time')
 			->orderBy('court_id')
-			->paginate(15, ['*'], 'page', $page);
+			->get();
+
+		[$hours, $grid] = $this->buildDayGrid($courts, $reservations);
+
+		$nowMinutes = $date->isSameDay($now) ? ($now->hour * 60 + $now->minute) : null;
+		$pastDay = $date->lessThan($now->startOfDay());
 
 		if ($request->expectsJson()) {
+			$reservationsPayload = [];
+			foreach ($reservations as $r) {
+				$start = $r->startAt();
+				$end = $start->addMinutes((int) $r->timeSlot->duration_minutes);
+				$reservationsPayload[$r->id] = [
+					'id' => $r->id,
+					'startTime' => $start->format('H:i'),
+					'endTime' => $end->format('H:i'),
+					'durationLabel' => $r->timeSlot->label,
+					'durationMinutes' => (int) $r->timeSlot->duration_minutes,
+					'courtId' => $r->court_id,
+					'courtName' => $r->court->name,
+					'courtLocation' => (string) $r->court->location,
+					'firstName' => $r->first_name,
+					'lastName' => $r->last_name,
+					'phone' => $r->phone,
+					'email' => $r->email,
+					'isFuture' => $start->greaterThan($now),
+					'cancelUrl' => route('admin.reservations.cancel', ['reservation' => $r->id]),
+					'messageUrl' => route('admin.reservations.message', ['reservation' => $r->id]),
+				];
+			}
+
 			return response()->json([
 				'date' => $date->toDateString(),
 				'dateFormatted' => $date->locale('sr')->isoFormat('dddd, D. MMMM YYYY.'),
 				'prevDate' => $date->subDay()->toDateString(),
 				'nextDate' => $date->addDay()->toDateString(),
 				'isToday' => $date->isSameDay($now),
-				'total' => $reservations->total(),
-				'currentPage' => $reservations->currentPage(),
-				'lastPage' => $reservations->lastPage(),
-				'reservations' => $reservations->map(function (Reservation $r) use ($now): array {
-					$start = $r->startAt();
-					$end = $start->addMinutes((int) $r->timeSlot->duration_minutes);
-					return [
-						'id' => $r->id,
-						'startTime' => $start->format('H:i'),
-						'endTime' => $end->format('H:i'),
-						'durationLabel' => $r->timeSlot->label,
-						'courtName' => $r->court->name,
-						'courtLocation' => $r->court->location,
-						'firstName' => $r->first_name,
-						'lastName' => $r->last_name,
-						'phone' => $r->phone,
-						'email' => $r->email,
-						'isFuture' => $start->greaterThan($now),
-						'cancelUrl' => route('admin.reservations.cancel', ['reservation' => $r->id]),
-						'messageUrl' => route('admin.reservations.message', ['reservation' => $r->id]),
-					];
-				}),
+				'nowMinutes' => $nowMinutes,
+				'pastDay' => $pastDay,
+				'total' => $reservations->count(),
+				'courts' => $courts->map(fn (Court $c) => [
+					'id' => $c->id,
+					'name' => $c->name,
+					'location' => (string) $c->location,
+				])->values(),
+				'hours' => $hours,
+				'grid' => $grid,
+				'reservations' => array_values($reservationsPayload),
 			]);
 		}
 
@@ -113,10 +132,63 @@ final class AdminController extends Controller
 			'prevDate' => $date->subDay(),
 			'nextDate' => $date->addDay(),
 			'today' => $now->startOfDay(),
+			'courts' => $courts,
 			'reservations' => $reservations,
-			'reservationsTotal' => $reservations->total(),
+			'reservationsTotal' => $reservations->count(),
+			'hours' => $hours,
+			'grid' => $grid,
+			'nowMinutes' => $nowMinutes,
+			'pastDay' => $pastDay,
 			'now' => $now,
 		]);
+	}
+
+	/**
+	 * @return array{0: array<int, string>, 1: array<int, array<int, array<string, mixed>>>}
+	 */
+	private function buildDayGrid(\Illuminate\Support\Collection $courts, \Illuminate\Support\Collection $reservations): array
+	{
+		$step = 30;
+		$openMin = 8 * 60;
+		$endMin = 23 * 60 + 30; // exclusive end; last row label = 23:00
+		$rows = (int) (($endMin - $openMin) / $step);
+
+		$hours = [];
+		for ($i = 0; $i < $rows; $i++) {
+			$m = $openMin + $i * $step;
+			$hours[] = sprintf('%02d:%02d', intdiv($m, 60), $m % 60);
+		}
+
+		$grid = [];
+		foreach ($courts as $court) {
+			$grid[$court->id] = array_fill(0, $rows, ['type' => 'empty']);
+		}
+
+		foreach ($reservations as $r) {
+			if (!isset($grid[$r->court_id])) {
+				continue;
+			}
+			$startStr = (string) $r->start_time;
+			[$hh, $mm] = array_pad(explode(':', $startStr), 2, '0');
+			$startMin = (int) $hh * 60 + (int) $mm;
+			$duration = (int) $r->timeSlot->duration_minutes;
+			$startIdx = (int) (($startMin - $openMin) / $step);
+			if ($startIdx < 0 || $startIdx >= $rows) {
+				continue;
+			}
+			$span = max(1, (int) ceil($duration / $step));
+			$span = min($span, $rows - $startIdx);
+			$grid[$r->court_id][$startIdx] = [
+				'type' => 'reservation',
+				'reservationId' => $r->id,
+				'rowspan' => $span,
+			];
+			for ($k = 1; $k < $span; $k++) {
+				$grid[$r->court_id][$startIdx + $k] = ['type' => 'skip'];
+			}
+		}
+
+		return [$hours, $grid];
 	}
 
 	public function cancel(Request $request, Reservation $reservation): RedirectResponse
