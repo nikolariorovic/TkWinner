@@ -53,7 +53,7 @@
 		.admin-nav-toggle { display: none; color: #fff; padding: 8px; border-radius: 8px; flex-shrink: 0; }
 		.admin-nav-toggle:hover { background: rgba(255,255,255,.08); }
 		.admin-nav-toggle svg { width: 24px; height: 24px; display: block; }
-		@media (max-width: 720px) {
+		@media (max-width: 860px) {
 			.topbar { position: relative; }
 			.admin-nav-toggle { display: inline-flex; }
 			.topbar-right { display: none; }
@@ -140,6 +140,7 @@
 				<nav class="admin-nav">
 					<a href="{{ route('admin.dashboard') }}">Rezervacije</a>
 					<a href="{{ route('admin.blocked.index') }}" class="active">Blokirani</a>
+					<a href="{{ route('admin.closed.index') }}">Neradni dani</a>
 					<a href="{{ route('admin.courts.index') }}">Tereni</a>
 				</nav>
 				<form method="post" action="{{ route('admin.logout') }}" class="logout-form">

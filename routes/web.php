@@ -41,6 +41,12 @@ Route::prefix('admin')->group(function (): void {
 			->name('admin.blocked.unblock')
 			->whereNumber('blocked');
 
+		Route::get('/neradni-dani', [AdminController::class, 'closedIndex'])->name('admin.closed.index');
+		Route::post('/neradni-dani', [AdminController::class, 'closedStore'])->name('admin.closed.store');
+		Route::post('/neradni-dani/{closed}/obrisi', [AdminController::class, 'closedDestroy'])
+			->name('admin.closed.destroy')
+			->whereNumber('closed');
+
 		Route::get('/tereni', [AdminController::class, 'courtsIndex'])->name('admin.courts.index');
 		Route::post('/tereni/{court}/toggle', [AdminController::class, 'toggleCourt'])
 			->name('admin.courts.toggle')

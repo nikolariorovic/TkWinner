@@ -8,6 +8,7 @@ use App\Mail\AdminCustomMessageMail;
 use App\Mail\OwnerReservationCancelledMail;
 use App\Mail\ReservationCancelledMail;
 use App\Models\BlockedCustomer;
+use App\Models\ClosedDate;
 use App\Models\Court;
 use App\Models\Reservation;
 use Carbon\CarbonImmutable;
@@ -377,6 +378,107 @@ final class AdminController extends Controller
 	{
 		$blocked->delete();
 		return redirect()->route('admin.blocked.index')->with('success', 'Korisnik je odblokiran.');
+	}
+
+	public function closedIndex(): View
+	{
+		$today = CarbonImmutable::now('Europe/Belgrade')->startOfDay();
+
+		$closedDates = ClosedDate::query()
+			->whereDate('date', '>=', $today->toDateString())
+			->orderBy('date')
+			->get();
+
+		return view('admin.closed', [
+			'closedDates' => $closedDates,
+			'today'       => $today,
+		]);
+	}
+
+	public function closedStore(Request $request): RedirectResponse
+	{
+		$validated = $request->validate([
+			'date_from' => ['required', 'date', 'after_or_equal:today'],
+			'date_to'   => ['nullable', 'date', 'after_or_equal:date_from'],
+			'reason'    => ['nullable', 'string', 'max:255'],
+		], [
+			'date_from.required'        => 'Izaberite datum.',
+			'date_from.after_or_equal'  => 'Ne možete označiti datum u prošlosti.',
+			'date_to.after_or_equal'    => 'Datum "do" mora biti isti ili posle datuma "od".',
+		]);
+
+		$tz   = 'Europe/Belgrade';
+		$from = CarbonImmutable::parse($validated['date_from'], $tz)->startOfDay();
+		$to   = isset($validated['date_to'])
+			? CarbonImmutable::parse($validated['date_to'], $tz)->startOfDay()
+			: $from;
+
+		if ($from->diffInDays($to) > 365) {
+			return back()->with('error', 'Period ne može biti duži od godinu dana.')->withInput();
+		}
+
+		$alreadyClosed = ClosedDate::query()
+			->whereBetween('date', [$from->toDateString(), $to->toDateString()])
+			->pluck('date')
+			->map(fn ($date) => $date->toDateString())
+			->flip();
+
+		$added = 0;
+		$existing = 0;
+		for ($day = $from; $day->lessThanOrEqualTo($to); $day = $day->addDay()) {
+			if ($alreadyClosed->has($day->toDateString())) {
+				$existing++;
+				continue;
+			}
+
+			ClosedDate::query()->create([
+				'date'      => $day->toDateString(),
+				'reason'    => $validated['reason'] ?? null,
+				'closed_by' => Auth::id(),
+			]);
+			$added++;
+		}
+
+		if ($added === 0) {
+			return back()->with('error', 'Izabrani datumi su već označeni kao neradni.')->withInput();
+		}
+
+		$message = $added === 1
+			? 'Datum je označen kao neradni.'
+			: sprintf('Označeno %d neradnih dana.', $added);
+
+		if ($existing > 0) {
+			$message .= sprintf(' (%d već označeno ranije.)', $existing);
+		}
+
+		$reservations = Reservation::query()
+			->whereBetween('reservation_date', [$from->toDateString(), $to->toDateString()])
+			->count();
+
+		if ($reservations > 0) {
+			$message .= sprintf(
+				' Pažnja: u tom periodu ima već zakazanih rezervacija (%d) — proverite ih u tabu Rezervacije.',
+				$reservations,
+			);
+		}
+
+		return redirect()->route('admin.closed.index')->with('success', $message);
+	}
+
+	public function closedDestroy(string $closed): RedirectResponse
+	{
+		$record = ClosedDate::query()->find((int) $closed);
+
+		// Datum je već uklonjen (npr. dupli klik na dugme) — samo vrati listu, bez 404.
+		if ($record === null) {
+			return redirect()->route('admin.closed.index');
+		}
+
+		$date = $record->date->locale('sr')->isoFormat('D. MMMM YYYY.');
+		$record->delete();
+
+		return redirect()->route('admin.closed.index')
+			->with('success', sprintf('%s je ponovo radni dan.', $date));
 	}
 
 	public function courtsIndex(): View

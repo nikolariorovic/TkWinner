@@ -20,6 +20,9 @@ final class ReservationService
 	/** Cache of day occupancy grids for the current request. Key format: "courtId:Y-m-d" */
 	private array $dayGridCache = [];
 
+	/** Cache of neradni dani for the current request. Key format: "Y-m-d" => true */
+	private ?array $closedDatesCache = null;
+
 	public function getAvailableStartTimes(int $courtId, CarbonImmutable $date, int $durationMinutes): array
 	{
 		$openMin       = self::timeToMinutes(self::OPEN_TIME);
@@ -103,7 +106,13 @@ final class ReservationService
 		$gridEndMin = self::timeToMinutes(self::LAST_START_TIME) + self::MAX_RESERVATION_MINUTES;
 		$step       = self::STEP_MINUTES;
 		$slots      = intdiv($gridEndMin - $openMin, $step);
-		$grid       = array_fill(0, $slots, false);
+
+		// Klub ne radi tog dana — ceo dan je zauzet, nema slobodnih termina.
+		if ($this->isClosedDate($date)) {
+			return $this->dayGridCache[$key] = array_fill(0, $slots, true);
+		}
+
+		$grid = array_fill(0, $slots, false);
 
 		$rows = DB::table('reservations as r')
 			->join('time_slots as ts', 'ts.id', '=', 'r.time_slot_id')
@@ -123,6 +132,19 @@ final class ReservationService
 		}
 
 		return $this->dayGridCache[$key] = $grid;
+	}
+
+	/** Da li je datum označen kao neradni dan u admin panelu */
+	public function isClosedDate(CarbonImmutable $date): bool
+	{
+		if ($this->closedDatesCache === null) {
+			$this->closedDatesCache = [];
+			foreach (DB::table('closed_dates')->pluck('date') as $closed) {
+				$this->closedDatesCache[substr((string) $closed, 0, 10)] = true;
+			}
+		}
+
+		return isset($this->closedDatesCache[$date->toDateString()]);
 	}
 
 	/** Utility: HH:MM -> minutes */

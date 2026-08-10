@@ -138,6 +138,8 @@ final class ReservationController extends Controller
 		$error = null;
 		if (BlockedCustomer::isBlocked($data['email'], $data['phone'])) {
 			$error = 'Vaš nalog je blokiran za online rezervacije. Molimo kontaktirajte klub.';
+		} elseif ($this->service->isClosedDate($date)) {
+			$error = 'Klub ne radi izabranog datuma. Molimo izaberite drugi datum.';
 		} elseif ($date->isSameDay($now) && $start <= $now) {
 			$error = 'Ne možete rezervisati termin u prošlosti.';
 		} elseif ($start < $open || $start > $lastStart) {
