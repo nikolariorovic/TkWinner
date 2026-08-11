@@ -88,6 +88,13 @@
 			font: inherit; font-size: 16px; color: var(--ink); background: #fff;
 		}
 		.field input:focus { outline: 0; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(234,88,12,.15); }
+		/* iOS Safari daje date inputu intrinzičnu širinu koju width:100% ne skuplja — polje je probijalo karticu. */
+		.field input[type="date"] {
+			-webkit-appearance: none; appearance: none;
+			min-width: 0; max-width: 100%; display: block;
+			min-height: 44px; text-align: left;
+		}
+		.field input[type="date"]::-webkit-date-and-time-value { text-align: left; }
 		.field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
 		.field-error { color: var(--danger); font-size: 12px; margin-top: 4px; font-weight: 500; }
 		.btn-primary { width: 100%; padding: 12px; border-radius: 10px; background: var(--brand); color: #fff; font-weight: 700; font-size: 14px; transition: background .15s, transform .15s; }
